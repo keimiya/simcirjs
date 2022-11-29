@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+        <script type="text/javascript" src="simcir.js"></script>
+        <link rel="stylesheet" type="text/css" href="simcir.css" />
+        <script type="text/javascript" src="simcir-basicset.js"></script>
+        <link rel="stylesheet" type="text/css" href="simcir-basicset.css" />
+        <script type="text/javascript" src="simcir-library.js"></script>
+        <script type="text/javascript" src="my-devices.js"></script>
+        <script type="text/javascript">
+$(function() {
+    var $s = simcir;
+    var $simcir = $('#mySimcir');
+    var getCircuitData = function() {
+        return $s.controller($simcir.find('.simcir-workspace')).text();
+    };
+    var setCircuitData = function(data) {
+        $s.setupSimcir($simcir, JSON.parse(data));
+    };
+    $('#clearBtn').click(function() {
+        var ok = confirm('回路を消去しますか？');
+        if (ok === false) return;
+        var data = JSON.parse(getCircuitData());
+        data.devices = [];
+        data.connectors = [];
+        setCircuitData(JSON.stringify(data));
+    });
+    $('#setSizeBtn').click(function() {
+        var width = parseInt($('#widthArea').val());
+        var height = parseInt($('#heightArea').val());
+        if (isNaN(width) || isNaN(height)) return;
+        if (width <= 0 || height <= 0) return;
+        var data = JSON.parse(getCircuitData());
+        data.width = width;
+        data.height = height;
+        setCircuitData(JSON.stringify(data));
+    });
+    $('#setCircuitBtn').click(function() {
+        setCircuitData($('#dataArea').val());
+    });
+    
+    setCircuitData('{"width":800,"height":600,"showToolbox":true,"toolbox":[{"type":"In"},{"type":"Out"},{"type":"Joint"},{"type":"OSC","freq":1,"label":"CLK(1Hz)"},{"type":"OSC","freq":10,"label":"CLK(10Hz)"},{"type":"DC"},{"type":"LED","label":"LED(R)"},{"type":"LED","color":"#00ff00","label":"LED(G)"},{"type":"LED","color":"#0000ff","label":"LED(B)"},{"type":"PushOff"},{"type":"PushOn"},{"type":"Toggle"},{"type":"BUF"},{"type":"NOT"},{"type":"AND"},{"type":"AND","numInputs":"3","label":"AND(3)"},{"type":"NAND"},{"type":"OR"},{"type":"OR","numInputs":"3","label":"OR(3)"},{"type":"OR","numInputs":"4","label":"OR(4)"},{"type":"NOR"},{"type":"XOR"},{"type":"XNOR"},{"type":"7seg"},{"type":"16seg"},{"type":"4bit7seg"},{"type":"RS-FF"},{"type":"JK-FF"},{"type":"T-FF"},{"type":"D-FF"},{"type":"HalfAdder"},{"type":"FullAdder"},{"type":"JK-FF(CP)"},{"type":"D-FF(CP)"},{"type":"MUX"}],"devices":[],"connectors":[]}');
+});
+        </script>
+        <title></title>
+    </head>
+    <body>
+        <div id="mySimcir"></div>
+        <div>
+            <button id="clearBtn">Clear</button>
+        </div>
+        <div>
+            Size<br>
+            <input id="widthArea" type="text" size="4" maxlength="4">
+            x
+            <input id="heightArea" type="text" size="4" maxlength="4">
+            <button id="setSizeBtn">Set</button>
+        </div>
+        <div>
+            Circuit data<br>
+            <textarea id="dataArea" style="width:600px; height:200px;"></textarea>
+            <button id="setCircuitBtn">Set</button>
+        </div>
+    </body>
+</html>
